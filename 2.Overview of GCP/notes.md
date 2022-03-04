@@ -64,4 +64,42 @@
     + Speech API  
     + Natural Language API   
     + Translation API   
-    + Jobs API  
+    + Jobs API
+
+- DevOps Tools  
+    + Cloud SDK  
+    + Deployment Manager  
+    + Cloud Source Repositories    
+    + Cloud  Tools for Android Studio  
+    + Cloud Tools for IntelliJ  
+    + PowerShell Cloud Tools  
+    + Visual Studio Cloud Tools  
+    + Plug-in for eclipse  
+    + Cloud Test Lab  
+
+- Management Tools  
+    + Stackdriver  
+    + Monitoring  
+    + Logging  
+    + Error Reporting  
+    + Trace  
+    + Debugger  
+    + Deployment Manager  
+    + Cloud Endpoints  
+    + Cloud Console  
+    + Cloud Shell  
+    + Cloud Mobile App  
+    + Billing App  
+    + Cloud APIs  
+
+## 3. GCP services (apart from above)
+- Other services
+    + API Analytics  
+    + IoT Core  
+    + VPN  
+    + AutoML  
+    + Transfer Appliance  
+    + Beyond Corp  
+    + Deployment Manager  
+    + Filestore  
+    + Memorystore  
