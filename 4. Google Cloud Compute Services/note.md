@@ -1,5 +1,5 @@
-###[more info](https://cloud.google.com/appengine/docs/the-appengine-environments)
-### APP Engine(PaaS - Managed Runtime - Line-of-businesss application)   
+[more info](https://cloud.google.com/appengine/docs/the-appengine-environments)
+### 1.APP Engine(PaaS - Managed Runtime - Line-of-businesss application)   
 - One of the first compute services from Google (PaaS)   
 
 - Fully managed platform for deploying web apps at scale
@@ -18,7 +18,7 @@
 - Flexible environment uses Docker containers to deploy and scale apps
 
 
-### Compute Engine(Iaas<infrastructure as a service> - VM - Highly customized workloads )
+### 2.Compute Engine(Iaas<infrastructure as a service> - VM - Highly customized workloads )
 - Give you a choice of virtual machines with a different set of configurations where you take control by logging into the VM installing the software of your choice and treating it like a machine.  
 
 - GCE enables Linux and Windows VMs to run on Google’s global infrastructure  
@@ -35,7 +35,7 @@
 - **Committed use discounts** are offered for purchases based on 1 year or 3 year contracts(long-term-discounts)
 
 
-### Kubernetes Engine (CaaS<container as a service> - Containers & Microservices - containerized workloads)
+### 3.Kubernetes Engine (CaaS<container as a service> - Containers & Microservices - containerized workloads)
 - All about an orchestration platform.  
 
 - Fundamental shift that is happening in the infrastructure segment, virtual machines are slowly getting replaced by containers.    
@@ -61,7 +61,7 @@
 - Auto scaling, automatic upgrades, and node auto-repair are some of the unique features of GKE  
 
 
-### Cloud Functions(FaaS - Functions - Event-driven applications)
+### 4.Cloud Functions(FaaS - Functions - Event-driven applications)
 - Represents functions as a service.      
 - Cloud Functions is a **serverless** execution environment for building and connecting cloud services  
   + Write code as a service  
