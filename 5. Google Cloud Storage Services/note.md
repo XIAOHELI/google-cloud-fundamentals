@@ -37,10 +37,12 @@
   + typically chosen for data that is access less than once a month.  
   + lower cost than standard.
 
-- Coldline  
-  + Meant for data accessed least frequently.  
-  + Chosen for data accessed less than **once in a year**.   
+- Coldline   
+  + Best for disaster recovery and data accessed less than **once a quarter**.   
   + e.g. insurance policy file...  
+
+- Archive
+  + Best for long-term digital preservation of data accessed less than **once a year**.  
 
 ```
 suggestions:
@@ -73,3 +75,57 @@ Use Nearline or Clodline for Backup & archival storage
     +  Zonal: you can launch the persistent disk that is confined to a specific zone.   
     +  Regional: provide higher availability and redundancy because data is constantly replicated within the same region or within the same location.    
     +  Local: same as above.  
+
+### 3. Google Cloud Filestore
+-  Managed file storage service for applications
+
+-  **Delivers NAS-like filesystem** interface and a shared filesystem
+
+-  Centralized, highly-available filesystem for GCE and GKE
+
+-  Exposed as a NFS fileshare with fixed export settings and default Unix permissions
+
+-  Filestore file shares are available as mount points in GCE VMs
+
+-  On-prem applications using NAS take advantage of Filestore
+
+-  Filestore has built-in zonal storage redundancy for data availability
+    + means when you're writing data it is immediately replicated across multiple endpoints so that you have storage redundancy and this ensures higher availability of data.  
+
+-  Data is always encrypted while in transit
+```
+summarize
+Google Cloud file store emulates nas like environment in cloud, enabling legacy applications to continue to run while moving from on-prem to the cloud.
+
+```
+
+### 4.Demo of GCS
+```
+# Dashboard page, go to cloud storage
+
+# buckets are going to be the containers within which we are going to create folders and store objects.
+
+# we start by create the bucket and this is the highest level container within the GCS hierarchy so a bucket may contain a folder and a folder may contain a file.
+
+# give a unique name
+
+# click on continue
+
+# choose where to store the data and continue
+
+# next option is to apply permissions you can choose object level or bucket level permissions
+
+# create with no size
+
+# create a folder in the bucket
+
+# we can upload file from local
+
+```
+
+5. Use Cases for GCP Storage Services (see the PDF)
+- **Google Cloud Storage** -> Object Storage -> Scalable, durable and long-term storage -> centralized storage for frequently and infrequently accessed files.  
+
+- **Persistent Disks** -> Block storage -> Attached to GCE VMs -> Dedicated attached storage for apps running in VMs based on HDDs and SSDs  
+
+- **Cloud Filestore** -> File system -> NFS fileshare for GCE VMs -> NAS-like shared file storage with standard UNIX permissions
