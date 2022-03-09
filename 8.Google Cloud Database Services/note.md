@@ -79,6 +79,35 @@
 
 ### 5.Demo - Provisioning Google Cloud SQL Instance
 ```
+----- Create SQL instance -----
+# Search SQL in search box
 
+# choose MySQL and configure
+pass: 241fuomPdHhB2b4D
 
+# choose the location depending on where your consumers are where your database clients are.
+
+# for the advance options
+if you are launching this on the public IP address this is going to be made available to your clients coming via the internet so this is public IP.
+you can also launch it on a private IP by enabling service networking API.
+
+# Flags
+you can add additional database flags for example if you are familiar with tuning my sequel database engine you could pass some of those parameters as the database flags.
+
+# maintenance
+you can also set up a maintenance schedule where upgrades take place and any patches that may be applied will happen during the maintenance window.
+
+# Switch to Google Shell
+gcloud config set project fast-ability-343009
+gcloud sql connect demo-db
+# enter the pass -> now we are inside the mysql shell
 ```
+
+6. Use cases
+Google Cloud SQL -> Relational -> Supports MySQL, PostgreSQL, and MS SQL Server -> Traditional web applications and business applications
+
+Google Cloud Bigtable -> NoSQL -> Column-oriented NoSQL database -> Big data and machine learning workloads
+
+Google Cloud Spanner -> RDBMS + NoSQL -> Globally distributed database with strong consistency -> Geographically deployed scalable applications with distributed database backend
+
+Google Cloud Memorystore -> In-memory -> Low latency Redis cache -> Accelerate retrieval of frequently accessed data  
