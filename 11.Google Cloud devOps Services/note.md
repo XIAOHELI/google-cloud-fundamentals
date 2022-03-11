@@ -2,10 +2,11 @@
 - DevOps Services provides tools and frameworks for automation  
 
 - Cloud Source Repositories store and track source code  
+  + e.g Github...
 
 - Cloud Build automates continuous integration and deployment  
   + + a CI-CD service provided by Google it can integrate with either cloud source repositories or third-party repositories like GitHub and GitLab.  
-  +  CI/CD is a method to frequently deliver apps to customers by introducing automation into the stages of app development. The main concepts attributed to CI/CD are continuous integration, continuous delivery, and continuous deployment. e.g. GitHub...
+  +  CI/CD is a method to frequently deliver apps to customers by introducing automation into the stages of app development. The main concepts attributed to CI/CD are continuous integration, continuous delivery, and continuous deployment.
 
 - Container Registry acts as the central repository for storing, securing, and managing Docker container images  
 
@@ -83,25 +84,76 @@ The demo for this section is storing images in container registry by taking a do
 > search for container registry
 > currently we don't have any images stored in the repository because we haven't built a container at we haven't built a container image it and we haven't pushed it to GCR which is Google container registry.
 
-so let's look at this set of commands that we need to execute to create a custom docker image and store it in container registry.
+> so let's look at this set of commands that we need to execute to create a custom docker image and store it in container registry.
 
 
 ```
 Lab Guide for Google Container Registry
-# Run the below commands in Google Cloud Shell
+
+# enter Shell
+gcloud config set project <project ID>
+
+# Run the below commands in Google Cloud Shell to enable API
 gcloud services enable containerregistry.googleapis.com
+
+# once API enabled
 export PROJECT_ID=<PROJECT ID> # Replace this with your GCP Project ID
+export PROJECT_ID=fast-ability-343009
+
+# docker version
+docker version
+
+# check if we have images locally
+docker images
+
+# pull the busybox image
 docker pull busybox
 docker images
-cat <<EOF >>Dockerfile
+
+# create docker file
+vim Dockerfile
+-----
 from busybox:latest
 CMD ["date"]
-EOF
+-----
+
+# build the image
+# call as my busybox, this is going to take the busybox and build a custom image based on the docker file that we have currently created.
 docker build . -t mybusybox
+docker images
+
+# we tag it to ensure we are following the convention expected by GCP container registry. so we call it gcr.io
 docker tag mybusybox gcr.io/$PROJECT_ID/mybusybox:latest
+
+# check and we will notice that the same image has been tagged with the convention expected by GCP
+docker images
+
+# check to see if it will run as we expected
 docker run gcr.io/$PROJECT_ID/mybusybox:latest
+
+# This will basically link the GCP container registry with docker so
+that we can continue to use the docker CLI. Normally, it will automatically registered.
 gcloud auth configure-docker
+
+# finally, run push the entire image to the container registry.
 docker push gcr.io/$PROJECT_ID/mybusybox:latest
+
+# refresh on the page and we can see the box is there.
+so once the image is stored in the container registry, you can pull this from a pod running in kubernetes engine or another docker application running inside compute engine. it doesn't matter where you are using this but you can very quickly pull this from your applications such as app engine flakes or kubernetes Engine or compute engine.
 ```
 
-> we start off by enabling the api's so every service that Google exposes as a part of GCP has an API associated with it. And even before we can use the command-line tools against those services, we still need to enable the appropriate API.
+> 1 we start off by enabling the api's so every service that Google exposes as a part of GCP has an API associated with it. And even before we can use the command-line tools against those services, we still need to enable the appropriate API.
+
+> 2 that we initialize an environment variable and set it to the project ID.
+
+> 3 we use the docker pull command to basically pull the tiny linux image called busybox then we go ahead and customize it.
+
+> 4 two lines commands (from busybox:lates CMD ["date"]) add into the docker file is all we need to build our image, the image will simply print the "date" when we run it.
+
+> 5 after we build the docker image, we tag it appropriately based on the convention that GCP uses.
+
+> 6 so gcr.io is the prefix that we need to use when we are using docker images stored within the container registry followed by the project ID that we have initialized in the environment variable. And we are calling this my busybox and adding a tag called latest. so we rename it literally tagging is nothing but renaming and then we test the local image that we have just built by running docker.
+
+> 7 we run this command called "configure docker" which associates the GCP credentials with docker CLI so that we can directly use docker push against the container registry.
+
+# 6. use cases -> see PDF
