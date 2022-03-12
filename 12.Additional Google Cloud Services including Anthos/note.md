@@ -135,11 +135,109 @@ gcloud container clusters create cloud-cluster \
 > now we have GKE cluster created called cloud-cluster, we can check on GUI.
 
 # Launch Minikube.
-> Refer to the docs at https://minikube.sigs.k8s.io/docs/ ,helps you to lunch your own cluster on your machine.  
 minikube start
+> Refer to the docs at https://minikube.sigs.k8s.io/docs/ ,helps you to lunch your own cluster on your machine.  
+> We will have two k8s clusters, one is running in the cloud as a part of the investment, and the other one is basically the mini cub based cluster running on our laptop.
 
-
-# Create GCP Service Account
+------register GKE Cluster------
+# Create GCP Service Account(anthos-hub) before register our cluster
 gcloud iam service-accounts create anthos-hub
 
+# Add IAM Role to Service Account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+ --member="serviceAccount:anthos-hub@$PROJECT_ID.iam.gserviceaccount.com" \
+ --role="roles/gkehub.connect"
+
+# Download the Service Account JSON Key
+gcloud iam service-accounts keys create "./anthos-hub-svc.json" \ --iam-account="anthos-hub@$PROJECT_ID.iam.gserviceaccount.com" \ --project=$PROJECT_ID
+> this step is important because it's going to generate the JSON key
+
+# Register cluster with Anthos
+URI=` gcloud container clusters list --filter='name=cloud-cluster' --uri`
+
+gcloud container hub memberships register cloud-cluster \
+        --gke-uri=$URI \
+        --service-account-key-file=./anthos-hub-svc.json
+
+# List Membership
+gcloud container hub memberships list
+> if we check the Anthos we can see our GKE has been registered.
+
+------Register Minikube with Anthosr------
+# Register Minikube with Anthos
+gcloud container hub memberships register local-cluster \
+     --service-account-key-file=./anthos-hub-svc.json \
+     --kubeconfig=~/.kube/config \
+     --context=minikube
+>This step will basically register our local minikube cluster with Anthos.
+> we can also see the local cluster on the GKE but can't access the detail because we don't have the agent, the permission for Anthers to grab those detail.
+
+# List Membership
+gcloud container hub memberships list
+
+---------------------------------------------
+> give those permissions to the Anthos agent to greb local cluster details
+> to enable us to talk to our local cluster, we need to create a community role and associate that with the agent running in the local cluster.
+
+# Create Kubernetes Role
+kubectl config use-context minikube
+
+cat
+<<EOF > cloud-console-reader.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cloud-console-reader
+rules:
+- apiGroups: [""]
+resources: ["nodes", "persistentvolumes"] verbs: ["get", "list", "watch"]
+- apiGroups: ["storage.k8s.io"] resources: ["storageclasses"] verbs: ["get", "list", "watch"]
+EOF
+
+kubectl apply -f cloud-console-reader.yaml
+
+# Create RoleBinding
+> this cluster roll will make sure that the Anthos agent is able to talk to our local cluster.
+
+kubectl create serviceaccount local-cluster
+
+kubectl create clusterrolebinding local-cluster-anthos-view \
+    --clusterrole view \
+     --serviceaccount default:local-cluster
+
+kubectl create clusterrolebinding cloud-console-reader-binding \
+     --clusterrole cloud-console-reader \
+     --serviceaccount default:local-cluster
+
+# Get the Token
+SECRET_NAME=$(kubectl get serviceaccount local-cluster -o jsonpath='{$.secrets[0].name}')
+> now all these steps are done and what it actually gives us is a password that we can use.
+
+# Copy the secret and paste it in the console
+kubectl get secret ${SECRET_NAME} -o jsonpath='{$.data.token}' | base64 --decode
+> now will be able to access the local cluster's details
+
+----------------clean up--------------------
+
+# Delete Membership
+gcloud container hub memberships delete cloud-cluster
+gcloud container hub memberships delete local-cluster
+
+# Clean up
+gcloud container clusters delete cloud-cluster --project=${PROJECT_ID}
+     gcloud iam service-accounts delete anthos-hub@${PROJECT_ID}.iam.gserviceaccount.com
+     minikube delete
+
 ```
+
+### 6.Google Cloud Migration Tools
+- Transfer Appliance  
+  + can request from Google for an appliance that is going to contain all the data and you can ship it to Google for ingesting that into cloud storage or any of the target sources.
+
+- Migrate for Compute Engine
+  + based on a tool called velocerator that provides the capability of migrating existing virtual machines or even physical machines into GCE VMs.
+  + this tool makes it easy for converting existing workloads and applications into a format that can be easily deployed on GCP.
+
+- BigQuery Data Transfer Service  
+
+**[For more products](https://cloud.google.com/products)**
